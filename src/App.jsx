@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import School from "./School";
+import Grafi from "./Grafi";
 import { Input } from "@/components/ui/input";
 
 import {
@@ -15,6 +16,7 @@ export default function App() {
   const [obcine, setObcine] = useState([]);
   const [SelObcina, setSelObcina] = useState("");
   const [search, setSearch] = useState("");
+  const [prebivalstvo, setPrebivalstvo] = useState([]);
 
   async function getSchools() {
     const response = await fetch("https://static.404.si/grace/");
@@ -28,9 +30,16 @@ export default function App() {
     setObcine(data);
   }
 
+  async function getAge() {
+    const response = await fetch("https://static.404.si/grace/prebivalstvo/");
+    const data = await response.json();
+    setPrebivalstvo([Object.keys(data), Object.values(data)]);
+  }
+
   useEffect(() => {
     getSchools();
     getMunicipality();
+    getAge();
   }, []);
 
   return (
@@ -49,7 +58,7 @@ export default function App() {
               ))}
             </SelectContent>
           </Select>
-          <Input />
+          <Input onChange={(value) => setSearch(value)} />
           {/* Dodaj input, ki bo omogčal iskanje po poštni številki. Ne pozabi na onChange event. */}
         </div>
       </div>
@@ -71,6 +80,9 @@ export default function App() {
                 <School data={school}></School>
               </div>
             ))}
+        </div>
+        <div>
+          <Grafi data={prebivalstvo}></Grafi>
         </div>
       </div>
     </>
